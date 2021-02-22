@@ -382,6 +382,7 @@ extension RedshiftDataAPIService.ListStatementsRequest: AWSPaginateToken {
         return .init(
             maxResults: self.maxResults,
             nextToken: token,
+            roleLevel: self.roleLevel,
             statementName: self.statementName,
             status: self.status
         )

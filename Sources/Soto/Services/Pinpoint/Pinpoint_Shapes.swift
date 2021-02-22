@@ -1615,18 +1615,22 @@ extension Pinpoint {
         public let body: String?
         /// The SMS message type. Valid values are TRANSACTIONAL (for messages that are critical or time-sensitive, such as a one-time passwords) and PROMOTIONAL (for messsages that aren't critical or time-sensitive, such as marketing messages).
         public let messageType: MessageType?
+        /// The long code to send the SMS message from. This value should be one of the dedicated long codes that's assigned to your AWS account. Although it isn't required, we recommend that you specify the long code using an E.164 format to ensure prompt and accurate delivery of the message. For example, +12065550100.
+        public let originationNumber: String?
         /// The sender ID to display on recipients' devices when they receive the SMS message.
         public let senderId: String?
 
-        public init(body: String? = nil, messageType: MessageType? = nil, senderId: String? = nil) {
+        public init(body: String? = nil, messageType: MessageType? = nil, originationNumber: String? = nil, senderId: String? = nil) {
             self.body = body
             self.messageType = messageType
+            self.originationNumber = originationNumber
             self.senderId = senderId
         }
 
         private enum CodingKeys: String, CodingKey {
             case body = "Body"
             case messageType = "MessageType"
+            case originationNumber = "OriginationNumber"
             case senderId = "SenderId"
         }
     }
@@ -6361,16 +6365,20 @@ extension Pinpoint {
     public struct JourneySMSMessage: AWSEncodableShape & AWSDecodableShape {
         /// The SMS message type. Valid values are TRANSACTIONAL (for messages that are critical or time-sensitive, such as a one-time passwords) and PROMOTIONAL (for messsages that aren't critical or time-sensitive, such as marketing messages).
         public let messageType: MessageType?
+        /// The long code to send the SMS message from. This value should be one of the dedicated long codes that's assigned to your AWS account. Although it isn't required, we recommend that you specify the long code using an E.164 format to ensure prompt and accurate delivery of the message. For example, +12065550100.
+        public let originationNumber: String?
         /// The sender ID to display as the sender of the message on a recipient's device. Support for sender IDs varies by country or region. For more information, see Supported Countries and Regions in the Amazon Pinpoint User Guide.
         public let senderId: String?
 
-        public init(messageType: MessageType? = nil, senderId: String? = nil) {
+        public init(messageType: MessageType? = nil, originationNumber: String? = nil, senderId: String? = nil) {
             self.messageType = messageType
+            self.originationNumber = originationNumber
             self.senderId = senderId
         }
 
         private enum CodingKeys: String, CodingKey {
             case messageType = "MessageType"
+            case originationNumber = "OriginationNumber"
             case senderId = "SenderId"
         }
     }

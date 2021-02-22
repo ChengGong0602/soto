@@ -1352,7 +1352,7 @@ extension Appflow {
     }
 
     public struct DescribeConnectorsRequest: AWSEncodableShape {
-        ///  The type of connector, such as Salesforce, Amplitude, and so on.
+        ///  The type of connector, such as Salesforce, Amplitude, and so on.    Locke refers to a new destination known as Amazon Connect Customer Profiles. At this time, we recommend that you do not use this destination.
         public let connectorTypes: [ConnectorType]?
         ///  The pagination token for the next page of data.
         public let nextToken: String?
@@ -1780,6 +1780,10 @@ extension Appflow {
     }
 
     public struct ExecutionRecord: AWSDecodableShape {
+        ///  The timestamp that indicates the last new or updated record to be transferred in the flow run.
+        public let dataPullEndTime: Date?
+        ///  The timestamp that determines the first new or updated record to be transferred in the flow run.
+        public let dataPullStartTime: Date?
         ///  Specifies the identifier of the given flow run.
         public let executionId: String?
         ///  Describes the result of the given flow run.
@@ -1791,7 +1795,9 @@ extension Appflow {
         ///  Specifies the start time of the flow run.
         public let startedAt: Date?
 
-        public init(executionId: String? = nil, executionResult: ExecutionResult? = nil, executionStatus: ExecutionStatus? = nil, lastUpdatedAt: Date? = nil, startedAt: Date? = nil) {
+        public init(dataPullEndTime: Date? = nil, dataPullStartTime: Date? = nil, executionId: String? = nil, executionResult: ExecutionResult? = nil, executionStatus: ExecutionStatus? = nil, lastUpdatedAt: Date? = nil, startedAt: Date? = nil) {
+            self.dataPullEndTime = dataPullEndTime
+            self.dataPullStartTime = dataPullStartTime
             self.executionId = executionId
             self.executionResult = executionResult
             self.executionStatus = executionStatus
@@ -1800,6 +1806,8 @@ extension Appflow {
         }
 
         private enum CodingKeys: String, CodingKey {
+            case dataPullEndTime
+            case dataPullStartTime
             case executionId
             case executionResult
             case executionStatus
@@ -2611,15 +2619,18 @@ extension Appflow {
         public let scheduleEndTime: Date?
         ///  The scheduling expression that determines the rate at which the schedule will run, for example rate(5minutes).
         public let scheduleExpression: String
+        ///  Specifies the optional offset that is added to the time interval for a schedule-triggered flow.
+        public let scheduleOffset: Int64?
         ///  Specifies the scheduled start time for a schedule-triggered flow.
         public let scheduleStartTime: Date?
-        ///  Specifies the time zone used when referring to the date and time of a scheduled-triggered flow.
+        ///  Specifies the time zone used when referring to the date and time of a scheduled-triggered flow, such as America/New_York.
         public let timezone: String?
 
-        public init(dataPullMode: DataPullMode? = nil, scheduleEndTime: Date? = nil, scheduleExpression: String, scheduleStartTime: Date? = nil, timezone: String? = nil) {
+        public init(dataPullMode: DataPullMode? = nil, scheduleEndTime: Date? = nil, scheduleExpression: String, scheduleOffset: Int64? = nil, scheduleStartTime: Date? = nil, timezone: String? = nil) {
             self.dataPullMode = dataPullMode
             self.scheduleEndTime = scheduleEndTime
             self.scheduleExpression = scheduleExpression
+            self.scheduleOffset = scheduleOffset
             self.scheduleStartTime = scheduleStartTime
             self.timezone = timezone
         }
@@ -2627,6 +2638,8 @@ extension Appflow {
         public func validate(name: String) throws {
             try self.validate(self.scheduleExpression, name: "scheduleExpression", parent: name, max: 256)
             try self.validate(self.scheduleExpression, name: "scheduleExpression", parent: name, pattern: ".*")
+            try self.validate(self.scheduleOffset, name: "scheduleOffset", parent: name, max: 36000)
+            try self.validate(self.scheduleOffset, name: "scheduleOffset", parent: name, min: 0)
             try self.validate(self.timezone, name: "timezone", parent: name, max: 256)
             try self.validate(self.timezone, name: "timezone", parent: name, pattern: ".*")
         }
@@ -2635,6 +2648,7 @@ extension Appflow {
             case dataPullMode
             case scheduleEndTime
             case scheduleExpression
+            case scheduleOffset
             case scheduleStartTime
             case timezone
         }
